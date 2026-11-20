@@ -67,7 +67,7 @@ CREATE TABLE message_attachments
     FOREIGN KEY (message_id)
         REFERENCES messages (id)
         ON DELETE CASCADE,
-    attachment_id UUID NOT NULL,
+    attachment_id UUID UNIQUE NOT NULL,
     FOREIGN KEY (attachment_id)
         REFERENCES binary_contents (id)
         ON DELETE CASCADE
