@@ -23,6 +23,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    // Java 애플리케이션이 PostgreSQL에 접속하기 위한 JDBC 드라이버
     runtimeOnly 'org.postgresql:postgresql'
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -30,6 +31,8 @@ dependencies {
     // 여러 검증 관련 라이브러리를 묶어 놓은 의존성입니다.
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
+    // Spring Data JPA와 Hibernate 등을 사용하기 위한 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 tasks.named('test') {
