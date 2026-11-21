@@ -18,6 +18,9 @@ import java.util.UUID;
 // 자식 엔티티에도 상속되므로 최상위 클래스에만 선언합니다.
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
+    // @Entity를 통해 JPA 영속성 컨텍스트에 의해 관리되는 엔티티는 기본키가 필요합니다.
+    // JPA가 영속성 컨텍스트에서 관리되는 엔티티를 고유하게 식별해야하기 때문입니다.
+    @Id
     UUID id;
 
     @CreatedDate
