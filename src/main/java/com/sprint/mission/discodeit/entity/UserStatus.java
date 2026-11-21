@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,10 +15,17 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserStatus extends BaseUpdatableEntity {
     // private final UUID userId;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+    @Column(name = "last_active_at", nullable = false)
     private Instant lastActiveAt;
+    @Transient
     private boolean isOnline;
 
+    public void setUser(User user) {
+        this.user = user;
+    }
     /*
     public UserStatus(UUID userId) {
         this.id =  UUID.randomUUID();

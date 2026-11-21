@@ -20,6 +20,7 @@ public class User extends BaseUpdatableEntity {
     private BinaryContent profile;
     // UserStatus를 참조합니다.
     // private final UserStatus userStatus;
+    // mappedBy는 테이블이 아니라 상대 엔티티의 필드 이름을 가리킵니다.
     @OneToOne(mappedBy = "user") // user_statuses 테이블에 user_id 외래키가 있습니다
     private UserStatus userStatus; // 필드가 불변이면 JPA가 DB에서 값을 조회 후 채워넣을 수 가 없습니다.
     @Column(name = "username", nullable = false, length = 50, unique = true)
@@ -30,7 +31,7 @@ public class User extends BaseUpdatableEntity {
     private String password;
 
     public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus
+        this.userStatus = userStatus;
     }
 
     /*
