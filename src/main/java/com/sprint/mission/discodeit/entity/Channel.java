@@ -9,8 +9,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class Channel extends BaseUpdatableEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Channel extends BaseUpdatableEntity {
     private final ChannelType type;
     private String name;
     private String description;
