@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.entity;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -8,11 +10,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Entity
+@NoArgsConstructor
 public class ReadStatus extends BaseUpdatableEntity {
     // private final UUID userId;
-    private final User user;
+    private User user;
     // private final UUID channelId;
-    private final Channel channel;
+    private Channel channel;
     private Instant lastReadAt;
 
     /*

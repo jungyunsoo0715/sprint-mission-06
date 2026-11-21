@@ -2,15 +2,19 @@ package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.dto.channel.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
+import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
 @Getter
+@Entity
+@NoArgsConstructor
 public class Channel extends BaseUpdatableEntity {
-    private final ChannelType type;
+    private ChannelType type;
     private String name;
     private String description;
 

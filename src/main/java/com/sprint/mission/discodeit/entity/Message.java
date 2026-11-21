@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.entity;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -9,14 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Entity
+@NoArgsConstructor
 public class Message extends BaseUpdatableEntity {
     private String content;
     // private final UUID channelId;
-    private final Channel channel;
+    private Channel channel;
     // private final UUID authorId;
-    private final User author;
+    private User author;
     // private final List<UUID> attachmentIds;
-    private final List<BinaryContent> attachments;
+    private List<BinaryContent> attachments;
 
     /*
     public Message(String content, UUID channelId, UUID authorId, List<UUID> attachmentIds) {

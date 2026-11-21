@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,10 +18,14 @@ public class User extends BaseUpdatableEntity {
     private BinaryContent profile;
     // UserStatus를 참조합니다.
     // private final UserStatus userStatus;
-    private UserStatus userStatus;
+    private UserStatus userStatus; // 필드가 불변이면 JPA가 DB에서 값을 조회 후 채워넣을 수 가 없습니다.
     private String username;
     private String email;
     private String password;
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
+    }
 
     /*
     public User(String username, String email, String password, UUID profileId) {

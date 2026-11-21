@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.entity;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -8,9 +10,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
+@Entity
+@NoArgsConstructor
 public class UserStatus extends BaseUpdatableEntity {
     // private final UUID userId;
-    private final User user;
+    private User user;
     private Instant lastActiveAt;
     private boolean isOnline;
 
