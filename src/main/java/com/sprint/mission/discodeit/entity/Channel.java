@@ -2,13 +2,10 @@ package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.dto.channel.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -16,8 +13,12 @@ import java.util.UUID;
 @Table(name = "channels")
 @NoArgsConstructor
 public class Channel extends BaseUpdatableEntity {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", length = 10, nullable = false)
     private ChannelType type;
+    @Column(name = "name", length = 100)
     private String name;
+    @Column(name = "description", length = 500)
     private String description;
 
     public Channel(PublicChannelCreateRequest request) {
