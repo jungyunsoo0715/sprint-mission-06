@@ -95,7 +95,7 @@ public class BasicReadStatusService implements ReadStatusService {
     public ReadStatusResponse update(UUID readStatusID, ReadStatusUpdateRequest request) {
         ReadStatus readStatus = this.findReadStatusEntity(readStatusID);
 
-        readStatus.update();
+        // readStatus.update();
         readStatus.updateLastReadAt(request.newLastReadAt());
         this.readStatusRepository.save(readStatus);
 

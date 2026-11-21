@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class ReadStatus extends BaseUpdatableEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ReadStatus extends BaseUpdatableEntity {
     private final UUID userId;
     private final UUID channelId;
     private Instant lastReadAt;
@@ -18,7 +17,7 @@ public class ReadStatus extends BaseUpdatableEntity implements Serializable {
         this.id = UUID.randomUUID();
         this.userId = userId;
         this.channelId = channelId;
-        this.lastReadAt = this.createdAt;
+        this.lastReadAt = Instant.now();
     }
 
     public void updateLastReadAt(Instant lastReadAt) { this.lastReadAt = lastReadAt; }

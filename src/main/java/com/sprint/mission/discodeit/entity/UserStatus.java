@@ -8,8 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class UserStatus extends BaseUpdatableEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class UserStatus extends BaseUpdatableEntity {
     private final UUID userId;
     private Instant lastActiveAt;
     private boolean isOnline;
@@ -18,14 +17,15 @@ public class UserStatus extends BaseUpdatableEntity implements Serializable {
         this.id =  UUID.randomUUID();
         this.userId = userId;
         this.isOnline = true;
+        this.lastActiveAt = Instant.now();
     }
 
     public void update() {
-        this.lastActiveAt = this.updatedAt;
+        this.lastActiveAt = Instant.now();
     }
 
     public void makeOnline() {
-        Duration duration = Duration.between(this.updatedAt, Instant.now());
+        Duration duration = Duration.between(this.lastActiveAt, Instant.now());
         this.isOnline = !duration.isNegative()
                 && duration.compareTo(Duration.ofMinutes(5)) <= 0;
     }
