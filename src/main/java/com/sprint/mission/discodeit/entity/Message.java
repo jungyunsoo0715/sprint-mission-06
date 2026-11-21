@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class Message extends BaseUpdatableEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Message extends BaseUpdatableEntity {
     private String content;
-    private final UUID channelId;
-    private final UUID authorId;
-    private final List<UUID> attachmentIds;
+    // private final UUID channelId;
+    private final Channel channel;
+    // private final UUID authorId;
+    private final User author;
+    // private final List<UUID> attachmentIds;
+    private final List<BinaryContent> attachments;
 
+    /*
     public Message(String content, UUID channelId, UUID authorId, List<UUID> attachmentIds) {
         this.id = UUID.randomUUID();
         this.content = content;
@@ -25,7 +28,19 @@ public class Message extends BaseUpdatableEntity implements Serializable {
                 ? new ArrayList<>()
                 : new ArrayList<>(attachmentIds);
     }
+     */
 
+    public Message(String content, Channel channel, User author, List<BinaryContent> attachments) {
+        this.id = UUID.randomUUID();
+        this.content = content;
+        this.channel = channel;
+        this.author = author;
+        this.attachments = attachments == null
+                ? new ArrayList<>()
+                : new ArrayList<>(attachments);
+    }
+
+    /*
     public void update(String newContent, List<UUID> newAttachmentIds) {
         if (newContent != null && !newContent.equals(this.content)) {
             this.content = newContent;
@@ -34,4 +49,15 @@ public class Message extends BaseUpdatableEntity implements Serializable {
             this.attachmentIds.addAll(newAttachmentIds);
         }
     }
+     */
+
+    public void update(String newContent, List<BinaryContent> newAttachments) {
+        if (newContent != null && !newContent.equals(this.content)) {
+            this.content = newContent;
+        }
+        if (!newAttachments.isEmpty()) {
+            this.attachments.addAll(newAttachments);
+        }
+    }
+
 }
