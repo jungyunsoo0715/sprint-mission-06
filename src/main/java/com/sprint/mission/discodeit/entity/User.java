@@ -1,9 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,16 +14,23 @@ import java.util.UUID;
 public class User extends BaseUpdatableEntity {
     // 프로필 이미지는 변경 될 수 있기 때문에 프로필 이미지의 id(profileId)는 불변이여서는 안됩니다.
     // private UUID profileId;
+    @OneToOne
+    // profile_id는 User의 FK입니다. @JoinColumn은 외래 키가 사용합니다.
+    @JoinColumn(name = "profile_id", unique = true)
     private BinaryContent profile;
     // UserStatus를 참조합니다.
     // private final UserStatus userStatus;
+    @OneToOne(mappedBy = "user") // user_statuses 테이블에 user_id 외래키가 있습니다
     private UserStatus userStatus; // 필드가 불변이면 JPA가 DB에서 값을 조회 후 채워넣을 수 가 없습니다.
+    @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
+    @Column(name = "password", nullable = false, length = 60)
     private String password;
 
     public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+        this.userStatus = userStatus
     }
 
     /*
@@ -39,10 +43,12 @@ public class User extends BaseUpdatableEntity {
     }
      */
 
-    public User(BinaryContent profile, UserStatus userStatus, String username, String email, String password) {
+    public User(BinaryContent profile, String username, String email, String password) {
         this.id = UUID.randomUUID();
         this.profile = profile;
-        this.userStatus = userStatus;
+        // 양방향 참조는 의존성을 생성자로 주입하는 것 보다는
+        // 세터로 주입 하는 것이 좋습니다.
+        // this.userStatus = userStatus;
         this.username = username;
         this.email = email;
         this.password = password;
