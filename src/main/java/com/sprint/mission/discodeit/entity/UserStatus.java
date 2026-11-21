@@ -8,12 +8,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class UserStatus implements Serializable {
+public class UserStatus extends BaseUpdatableEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final UUID id;
     private final UUID userId;
-    private final Instant createdAt;
-    private Instant updatedAt;
     private Instant lastActiveAt;
     private boolean isOnline;
 

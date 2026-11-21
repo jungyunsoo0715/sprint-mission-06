@@ -9,12 +9,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class Channel implements Serializable {
-
+public class Channel extends BaseUpdatableEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final UUID id;
-    private final Instant createdAt;
-    private Instant updatedAt;
     private final ChannelType type;
     private String name;
     private String description;

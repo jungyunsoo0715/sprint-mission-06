@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class Message implements Serializable {
+public class Message extends BaseUpdatableEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final UUID id;
-    private final Instant createdAt;
-    private Instant updatedAt;
     private String content;
     private final UUID channelId;
     private final UUID authorId;
