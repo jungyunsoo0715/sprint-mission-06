@@ -9,13 +9,23 @@ import java.util.UUID;
 
 @Getter
 public class UserStatus extends BaseUpdatableEntity {
-    private final UUID userId;
+    // private final UUID userId;
+    private final User user;
     private Instant lastActiveAt;
     private boolean isOnline;
 
+    /*
     public UserStatus(UUID userId) {
         this.id =  UUID.randomUUID();
         this.userId = userId;
+        this.isOnline = true;
+        this.lastActiveAt = Instant.now();
+    }
+     */
+
+    public UserStatus(User user) {
+        this.id = UUID.randomUUID();
+        this.user = user;
         this.isOnline = true;
         this.lastActiveAt = Instant.now();
     }
