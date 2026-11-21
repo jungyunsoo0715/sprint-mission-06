@@ -16,7 +16,6 @@ public final class BinaryContent extends BaseEntity implements Serializable {
 
     public BinaryContent(String fileName, Long size, String contentType, byte[] bytes) {
         this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
         this.fileName = fileName;
         this.size = size;
         this.contentType = contentType;

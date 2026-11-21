@@ -18,13 +18,7 @@ public class ReadStatus extends BaseUpdatableEntity implements Serializable {
         this.id = UUID.randomUUID();
         this.userId = userId;
         this.channelId = channelId;
-        this.createdAt = Instant.now();
-        this.updatedAt = this.createdAt;
         this.lastReadAt = this.createdAt;
-    }
-
-    public void update() {
-        this.updatedAt = Instant.now();
     }
 
     public void updateLastReadAt(Instant lastReadAt) { this.lastReadAt = lastReadAt; }

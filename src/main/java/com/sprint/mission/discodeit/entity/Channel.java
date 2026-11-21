@@ -17,8 +17,6 @@ public class Channel extends BaseUpdatableEntity implements Serializable {
 
     public Channel(PublicChannelCreateRequest request) {
         this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
         this.type = ChannelType.PUBLIC;
         this.name = request.name();
         this.description = request.description();
@@ -26,27 +24,18 @@ public class Channel extends BaseUpdatableEntity implements Serializable {
 
     public Channel(PrivateChannelCreateRequest request) {
         this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
         this.type = ChannelType.PRIVATE;
         this.name = null;
         this.description = null;
     }
 
     public void update(String newName, String newDescription) {
-        boolean anyValueUpdated = false;
         if (newName != null && !newName.isBlank() && !newName.equals(this.name)) {
             this.name = newName;
-            anyValueUpdated = true;
         }
 
         if (newDescription != null && !newDescription.equals(this.description)) {
             this.description = newDescription;
-            anyValueUpdated = true;
-        }
-
-        if (anyValueUpdated) {
-            this.updatedAt = Instant.now();
         }
     }
 }

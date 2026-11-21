@@ -17,13 +17,10 @@ public class UserStatus extends BaseUpdatableEntity implements Serializable {
     public UserStatus(UUID userId) {
         this.id =  UUID.randomUUID();
         this.userId = userId;
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
         this.isOnline = true;
     }
 
     public void update() {
-        this.updatedAt = Instant.now();
         this.lastActiveAt = this.updatedAt;
     }
 

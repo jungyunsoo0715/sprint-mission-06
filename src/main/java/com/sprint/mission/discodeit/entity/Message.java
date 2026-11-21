@@ -18,8 +18,6 @@ public class Message extends BaseUpdatableEntity implements Serializable {
 
     public Message(String content, UUID channelId, UUID authorId, List<UUID> attachmentIds) {
         this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
         this.content = content;
         this.channelId = channelId;
         this.authorId = authorId;
@@ -29,19 +27,11 @@ public class Message extends BaseUpdatableEntity implements Serializable {
     }
 
     public void update(String newContent, List<UUID> newAttachmentIds) {
-        boolean anyValueUpdated = false;
         if (newContent != null && !newContent.equals(this.content)) {
             this.content = newContent;
-            anyValueUpdated = true;
         }
-
         if (!newAttachmentIds.isEmpty()) {
             this.attachmentIds.addAll(newAttachmentIds);
-            anyValueUpdated = true;
-        }
-
-        if (anyValueUpdated) {
-            this.updatedAt = Instant.now();
         }
     }
 }

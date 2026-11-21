@@ -18,8 +18,6 @@ public class User extends BaseUpdatableEntity implements Serializable {
 
         this.id = UUID.randomUUID();
         this.profileId = profileId;
-        this.createdAt = Instant.now();
-        this.updatedAt = createdAt;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -29,22 +27,15 @@ public class User extends BaseUpdatableEntity implements Serializable {
         boolean anyValueUpdated = false;
         if (newUsername != null && !newUsername.equals(this.username)) {
             this.username = newUsername;
-            anyValueUpdated = true;
         }
         if (newEmail != null && !newEmail.equals(this.email)) {
             this.email = newEmail;
-            anyValueUpdated = true;
         }
         if (newPassword != null && !newPassword.equals(this.password)) {
             this.password = newPassword;
-            anyValueUpdated = true;
         }
         if (newProfileId != null && !newProfileId.equals(this.profileId)) {
             this.profileId = newProfileId;
-            anyValueUpdated = true;
-        }
-        if (anyValueUpdated) {
-            this.updatedAt = Instant.now();
         }
     }
 }
