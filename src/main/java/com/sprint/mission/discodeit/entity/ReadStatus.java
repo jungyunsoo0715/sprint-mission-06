@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
+@Table(name = "read_statuses")
 @NoArgsConstructor
 public class ReadStatus extends BaseUpdatableEntity {
     // private final UUID userId;

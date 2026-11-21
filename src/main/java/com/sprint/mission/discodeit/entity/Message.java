@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
+@Table(name = "messages")
 @NoArgsConstructor
 public class Message extends BaseUpdatableEntity {
     private String content;

@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Entity // Entity는 클래스를 JPA의 영속성 관리 대상으로 지정해 DB 테이블과 매핑하도록 합니다.
+@Table(name = "users")
 @NoArgsConstructor // @Entity를 사용하면, 매개 변수가 없는 생성자가 반드시 있어야합니다.
 // 이는 JPA 가 DB에서 값을 조회하여 필드에 채워넣기 때문에, 초기화 하는 객체의 필드 값이 필요없기 때문입니다.
 public class User extends BaseUpdatableEntity {
