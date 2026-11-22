@@ -199,9 +199,24 @@ public class BasicUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID userId) {
+        /*
         if (!this.userRepository.existsById(userId)) {
             throw new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다.");
+        }
+         */
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다."));
+
+        BinaryContent profileImage = null;
+
+        // Profile Image는 cascade로 삭제되지 않기 때문에 직접 삭제해주어야합니다.
+        if (user.getProfile() != null) {
+            profileImage = user.getProfile();
+            this.binaryContentRepository.deleteById(profileImage.getId());
         }
 
         /*
