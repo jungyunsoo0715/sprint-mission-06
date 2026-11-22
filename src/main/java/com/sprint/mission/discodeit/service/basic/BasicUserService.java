@@ -141,13 +141,15 @@ public class BasicUserService implements UserService {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
         for (User user : users) {
+            /*
             UserStatus userStatus = this.userStatusRepository.findByUserId(user.getId())
                     .orElseThrow(() ->
                             new UserStatusNotFoundException(
                             "ID가 " + user.getId() + "인 user의 userStatus를 찾을 수 없습니다."
                     ));
-
-            userStatus.makeOnline();
+             */
+            UserStatus userStatus = user.getUserStatus();
+            userStatus.updateOnlineStatus();
 
             userResponses.add(this.userMapper.toUserResponse(user, userStatus));
         }
@@ -181,13 +183,13 @@ public class BasicUserService implements UserService {
         }
 
         UUID oldProfileId = user.getProfile().getId();
-        // UUID newProfileId = null;
+        UUID newProfileId = null;
 
         BinaryContent newProfileImage = null;
 
         if (profile != null) {
             newProfileImage = this.createProfileImage(profile);
-            // newProfileId = profileImage.getId();
+            newProfileId = newProfileImage.getId();
         }
 
         user.update(
@@ -200,7 +202,7 @@ public class BasicUserService implements UserService {
 
         userRepository.save(user);
 
-        if (newProfileImage.getId() != null && oldProfileId != null) {
+        if (newProfileId != null && oldProfileId != null) {
             binaryContentRepository.deleteById(oldProfileId);
         }
 

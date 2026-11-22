@@ -37,7 +37,7 @@ public class UserStatus extends BaseUpdatableEntity {
         this.lastActiveAt = Instant.now();
     }
 
-    public void makeOnline() {
+    public void updateOnlineStatus() {
         Duration duration = Duration.between(this.lastActiveAt, Instant.now());
         this.isOnline = !duration.isNegative()
                 && duration.compareTo(Duration.ofMinutes(5)) <= 0;
