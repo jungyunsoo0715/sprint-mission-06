@@ -18,8 +18,6 @@ public interface UserService {
 
     User findUserEntity(UUID userId);
 
-    UserStatus findUserStatus(UUID userId);
-
     UserDto update(UUID userId, UserUpdateRequest request, MultipartFile profile)
             throws IOException;
 
