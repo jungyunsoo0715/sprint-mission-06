@@ -75,7 +75,7 @@ public class BasicUserService implements UserService {
     }
 
     private void validateUniqueEmail(String email) {
-        boolean isEmailTaken = this.userRepository.existsByEmail();
+        boolean isEmailTaken = this.userRepository.existsByEmail(email);
 
         if (isEmailTaken) {
             throw new DuplicateResourceException(

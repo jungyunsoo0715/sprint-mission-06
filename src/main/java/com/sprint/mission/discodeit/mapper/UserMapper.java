@@ -19,7 +19,7 @@ public class UserMapper {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getProfileId()
+                user.getProfile().getId()
         );
     }
 
