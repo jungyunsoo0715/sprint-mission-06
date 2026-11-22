@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.dto.authentication.LoginResponse;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.AuthMapper;
-import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.oldrepository.UserRepository;
 import com.sprint.mission.discodeit.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

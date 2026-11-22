@@ -1,9 +1,7 @@
-package com.sprint.mission.discodeit.repository.file;
+package com.sprint.mission.discodeit.oldrepository.file;
 
-import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.repository.MessageRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.oldrepository.UserRepository;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,12 +12,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 // @Repository
-public class FileMessageRepository implements MessageRepository {
+public class FileUserRepository implements UserRepository {
     private final Path DIRECTORY;
     private final String EXTENSION = ".ser";
 
-    public FileMessageRepository() {
-        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", Message.class.getSimpleName());
+    public FileUserRepository() {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", User.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);
@@ -34,38 +32,38 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     @Override
-    public Message save(Message message) {
-        Path path = resolvePath(message.getId());
+    public User save(User user) {
+        Path path = resolvePath(user.getId());
         try (
                 FileOutputStream fos = new FileOutputStream(path.toFile());
                 ObjectOutputStream oos = new ObjectOutputStream(fos)
         ) {
-            oos.writeObject(message);
+            oos.writeObject(user);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return message;
+        return user;
     }
 
     @Override
-    public Optional<Message> findById(UUID id) {
-        Message messageNullable = null;
+    public Optional<User> findById(UUID id) {
+        User userNullable = null;
         Path path = resolvePath(id);
         if (Files.exists(path)) {
             try (
                     FileInputStream fis = new FileInputStream(path.toFile());
                     ObjectInputStream ois = new ObjectInputStream(fis)
             ) {
-                messageNullable = (Message) ois.readObject();
+                userNullable = (User) ois.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-        return Optional.ofNullable(messageNullable);
+        return Optional.ofNullable(userNullable);
     }
 
     @Override
-    public List<Message> findAll() {
+    public List<User> findAll() {
         try {
             return Files.list(DIRECTORY)
                     .filter(path -> path.toString().endsWith(EXTENSION))
@@ -74,7 +72,7 @@ public class FileMessageRepository implements MessageRepository {
                                 FileInputStream fis = new FileInputStream(path.toFile());
                                 ObjectInputStream ois = new ObjectInputStream(fis)
                         ) {
-                            return (Message) ois.readObject();
+                            return (User) ois.readObject();
                         } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }

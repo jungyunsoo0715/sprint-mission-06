@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.repository.jcf;
+package com.sprint.mission.discodeit.oldrepository.jcf;
 
 import com.sprint.mission.discodeit.entity.ReadStatus;
-import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import com.sprint.mission.discodeit.oldrepository.ReadStatusRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

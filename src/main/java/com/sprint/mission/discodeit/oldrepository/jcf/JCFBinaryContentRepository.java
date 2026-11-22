@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.repository.jcf;
+package com.sprint.mission.discodeit.oldrepository.jcf;
 
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import com.sprint.mission.discodeit.oldrepository.BinaryContentRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

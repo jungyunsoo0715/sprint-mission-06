@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.repository.file;
+package com.sprint.mission.discodeit.oldrepository.file;
 
-import com.sprint.mission.discodeit.entity.ReadStatus;
-import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.oldrepository.MessageRepository;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,19 +10,18 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 
-public class FileReadStatusRepository implements ReadStatusRepository {
+// @Repository
+public class FileMessageRepository implements MessageRepository {
     private final Path DIRECTORY;
     private final String EXTENSION = ".ser";
 
-    public FileReadStatusRepository() {
-        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", ReadStatus.class.getSimpleName());
+    public FileMessageRepository() {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", Message.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);
             } catch (IOException e) {
-                // 런타임(실행 중)에서 발생하는 예외를 나타냅니다.
                 throw new RuntimeException(e);
             }
         }
@@ -33,55 +32,47 @@ public class FileReadStatusRepository implements ReadStatusRepository {
     }
 
     @Override
-    public ReadStatus save(ReadStatus readStatus) {
-        Path path = this.resolvePath(readStatus.getId());
+    public Message save(Message message) {
+        Path path = resolvePath(message.getId());
         try (
                 FileOutputStream fos = new FileOutputStream(path.toFile());
                 ObjectOutputStream oos = new ObjectOutputStream(fos)
         ) {
-            oos.writeObject(readStatus);
+            oos.writeObject(message);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return readStatus;
+        return message;
     }
 
     @Override
-    public void saveAll(List<ReadStatus> readStatusList) {
-        readStatusList.forEach(this::save);
-
-    }
-
-
-    @Override
-    public Optional<ReadStatus> findById(UUID id) {
-        ReadStatus readStatusNullable = null;
-        Path path = this.resolvePath(id);
+    public Optional<Message> findById(UUID id) {
+        Message messageNullable = null;
+        Path path = resolvePath(id);
         if (Files.exists(path)) {
             try (
                     FileInputStream fis = new FileInputStream(path.toFile());
                     ObjectInputStream ois = new ObjectInputStream(fis)
             ) {
-                readStatusNullable = (ReadStatus) ois.readObject();
+                messageNullable = (Message) ois.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-        return Optional.ofNullable(readStatusNullable);
+        return Optional.ofNullable(messageNullable);
     }
 
     @Override
-    public List<ReadStatus> findAll() {
-        try (Stream<Path> paths = Files.list(DIRECTORY)) {
-            return paths
+    public List<Message> findAll() {
+        try {
+            return Files.list(DIRECTORY)
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (
                                 FileInputStream fis = new FileInputStream(path.toFile());
-                                ObjectInputStream ois = new ObjectInputStream(fis);
+                                ObjectInputStream ois = new ObjectInputStream(fis)
                         ) {
-                            return (ReadStatus) ois.readObject();
+                            return (Message) ois.readObject();
                         } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
@@ -93,21 +84,14 @@ public class FileReadStatusRepository implements ReadStatusRepository {
     }
 
     @Override
-    public List<ReadStatus> findAllByUserId(UUID userId) {
-        return this.findAll().stream()
-                .filter(readStatus -> readStatus.getUserId().equals(userId))
-                .toList();
-    }
-
-    @Override
     public boolean existsById(UUID id) {
-        Path path = this.resolvePath(id);
+        Path path = resolvePath(id);
         return Files.exists(path);
     }
 
     @Override
     public void deleteById(UUID id) {
-        Path path = this.resolvePath(id);
+        Path path = resolvePath(id);
         try {
             Files.delete(path);
         } catch (IOException e) {

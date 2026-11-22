@@ -1,9 +1,7 @@
-package com.sprint.mission.discodeit.repository.file;
+package com.sprint.mission.discodeit.oldrepository.file;
 
-import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.repository.ChannelRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.oldrepository.BinaryContentRepository;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,14 +10,15 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 // @Repository
-public class FileChannelRepository implements ChannelRepository {
+public class FileBinaryContentRepository implements BinaryContentRepository {
     private final Path DIRECTORY;
     private final String EXTENSION = ".ser";
 
-    public FileChannelRepository() {
-        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", Channel.class.getSimpleName());
+    public FileBinaryContentRepository() {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", BinaryContent.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);
@@ -34,47 +33,47 @@ public class FileChannelRepository implements ChannelRepository {
     }
 
     @Override
-    public Channel save(Channel channel) {
-        Path path = resolvePath(channel.getId());
+    public BinaryContent save(BinaryContent binaryContent) {
+        Path path = resolvePath(binaryContent.getId());
         try (
                 FileOutputStream fos = new FileOutputStream(path.toFile());
                 ObjectOutputStream oos = new ObjectOutputStream(fos)
         ) {
-            oos.writeObject(channel);
+            oos.writeObject(binaryContent);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return channel;
+        return binaryContent;
     }
 
     @Override
-    public Optional<Channel> findById(UUID id) {
-        Channel channelNullable = null;
+    public Optional<BinaryContent> findById(UUID id) {
+        BinaryContent binaryContentNullable = null;
         Path path = resolvePath(id);
         if (Files.exists(path)) {
             try (
                     FileInputStream fis = new FileInputStream(path.toFile());
                     ObjectInputStream ois = new ObjectInputStream(fis)
             ) {
-                channelNullable = (Channel) ois.readObject();
+                binaryContentNullable = (BinaryContent) ois.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-        return Optional.ofNullable(channelNullable);
+        return Optional.ofNullable(binaryContentNullable);
     }
 
     @Override
-    public List<Channel> findAll() {
-        try {
-            return Files.list(DIRECTORY)
+    public List<BinaryContent> findAll() {
+        try (Stream<Path> paths = Files.list(DIRECTORY)) {
+            return paths
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (
                                 FileInputStream fis = new FileInputStream(path.toFile());
-                                ObjectInputStream ois = new ObjectInputStream(fis)
+                                ObjectInputStream ois = new ObjectInputStream(fis);
                         ) {
-                            return (Channel) ois.readObject();
+                            return (BinaryContent) ois.readObject();
                         } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
@@ -87,13 +86,13 @@ public class FileChannelRepository implements ChannelRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        Path path = resolvePath(id);
+        Path path = this.resolvePath(id);
         return Files.exists(path);
     }
 
     @Override
     public void deleteById(UUID id) {
-        Path path = resolvePath(id);
+        Path path = this.resolvePath(id);
         try {
             Files.delete(path);
         } catch (IOException e) {

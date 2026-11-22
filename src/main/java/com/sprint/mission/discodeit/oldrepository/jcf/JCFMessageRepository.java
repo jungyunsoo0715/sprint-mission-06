@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.repository.jcf;
+package com.sprint.mission.discodeit.oldrepository.jcf;
 
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.oldrepository.MessageRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

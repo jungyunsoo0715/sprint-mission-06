@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.repository.jcf;
+package com.sprint.mission.discodeit.oldrepository.jcf;
 
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.oldrepository.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
