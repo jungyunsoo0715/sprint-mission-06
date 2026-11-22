@@ -8,7 +8,7 @@ import com.sprint.mission.discodeit.dto.userstatus.UserStatusUpdateRequest;
 import java.util.UUID;
 
 public interface UserStatusService {
-    UserStatusResponse create(UserStatusCreateRequest request);
+    // UserStatusResponse create(UserStatusCreateRequest request);
 
     UserStatusResponse find(UUID userStatusId);
 
