@@ -21,7 +21,28 @@ public class User extends BaseUpdatableEntity {
     // UserStatus를 참조합니다.
     // private final UserStatus userStatus;
     // mappedBy는 테이블이 아니라 상대 엔티티의 필드 이름을 가리킵니다.
-    @OneToOne(mappedBy = "user") // user_statuses 테이블에 user_id 외래키가 있습니다
+    @OneToOne(
+            mappedBy = "user",
+            // User가 부모 엔티티, UserStatus가 자식 엔티티
+            // UserStatus의 생명 주기를 부모가 관리합니다.
+            // CascadeType.ALL을 적용하면, 이 경우,
+            // JPA의 User에 대한 영속화 관리 작업(영속화 + 삭제/병합/새로고침)이 UserStatus에도 적용됩니다.
+            // 예를 들어, User 엔티티가 삭제되면, UserStatus도 삭제되고,
+            // User 엔티티가 생성되어 저장되면,
+            // 이미 생성되어 User가 참조하는 UserStatus도 저장됩니다.
+            // DB의 값으로 엔티티의 상태를 새로고침하면, UserStatus의 자신의 상태들이 새로고침됩니다.
+            cascade = CascadeType.ALL,
+            // 부모와의 연관관계가 끊어진 자식 엔티티를 삭제하는 기능입니다.
+            // 영속 상태의 관계가 해제되면 DB에 저장된 UserStatus 행을 삭제합니다.
+            // 예를 들면, 메시지에서 첨부파일 하나가 제거된다면,
+	        // 메시지와 첨부파일의 연관관계가 끊어지고,
+            // orphanRemoval = true가 설정되어 있다면
+            // DB에서 해당 첨부파일에 해당하는 행도 삭제됩니다.
+            // 이 때 첨부 파일 객체는 즉시 메모리에서 삭제되는 것이 아닙니다.
+            // 만약, 추후에 더 이상 접근할 수 없는 객체가 된다면, GC가 메모리를 수거해 갑니다.
+            orphanRemoval = true
+    )
+    // user_statuses 테이블에 user_id 외래키가 있습니다
     private UserStatus userStatus; // 필드가 불변이면 JPA가 DB에서 값을 조회 후 채워넣을 수 가 없습니다.
     @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
