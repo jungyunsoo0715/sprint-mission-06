@@ -57,7 +57,7 @@ public class BasicUserService implements UserService {
         );
 
         UserStatus userStatus = new UserStatus(user);
-        userStatus.makeOnline();
+        userStatus.updateOnlineStatus();
 
         user.setUserStatus(userStatus);
 
@@ -123,7 +123,7 @@ public class BasicUserService implements UserService {
         UserStatus userStatus = user.getUserStatus();
         // 이미 전부 영속성 컨텍스트의 관리 대상이기 때문에,
         // 따로 save()로 반환한 객체를 가져올 필요가 없습니다.
-        userStatus.makeOnline();
+        userStatus.updateOnlineStatus();
 
         return this.userMapper.toUserResponse(user, userStatus);
     }
@@ -158,6 +158,7 @@ public class BasicUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto update(
             UUID userId,
             UserUpdateRequest request,
@@ -166,44 +167,32 @@ public class BasicUserService implements UserService {
 
         User user = this.findUserEntity(userId);
 
-        String newUsername = null;
-        String newEmail = null;
-        String newPassword = null;
-
-        if (request.newUsername() != null) {
+        if (request.newUsername() != null
+                && !request.newUsername().equals(user.getUsername())) {
             this.validateUniqueUsername(request.newUsername());
-            newUsername = request.newUsername();
         }
-        if (request.newEmail() != null) {
+
+        if (request.newEmail() != null
+                && !request.newEmail().equals(user.getEmail())) {
             this.validateUniqueEmail(request.newEmail());
-            newEmail = request.newEmail();
-        }
-        if (request.newPassword() != null) {
-            newPassword = request.newPassword();
         }
 
-        UUID oldProfileId = user.getProfile().getId();
-        UUID newProfileId = null;
-
-        BinaryContent newProfileImage = null;
+        BinaryContent oldProfile = user.getProfile();
+        BinaryContent newProfile = null;
 
         if (profile != null) {
-            newProfileImage = this.createProfileImage(profile);
-            newProfileId = newProfileImage.getId();
+            newProfile = this.createProfileImage(profile);
         }
 
         user.update(
-                newUsername,
-                newEmail,
-                newPassword,
-                newProfileImage
-                // newProfileId
+                request.newUsername(),
+                request.newEmail(),
+                request.newPassword(),
+                newProfile
         );
 
-        userRepository.save(user);
-
-        if (newProfileId != null && oldProfileId != null) {
-            binaryContentRepository.deleteById(oldProfileId);
+        if (newProfile != null && oldProfile != null) {
+            this.binaryContentRepository.delete(oldProfile);
         }
 
         return this.userMapper.toUserDto(user);
