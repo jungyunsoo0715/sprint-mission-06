@@ -24,7 +24,10 @@ public class Message extends BaseUpdatableEntity {
     @JoinColumn(name = "author_id") // messages.author_id 외래 키와 매핑
     private User author;
     // private final List<UUID> attachmentIds;
-    @OneToMany
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JoinTable(
             // message_attachments 테이블을 통해 연결
             name = "message_attachments",
