@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.dto.user.*;
 import com.sprint.mission.discodeit.entity.*;
 import com.sprint.mission.discodeit.exception.DuplicateResourceException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
+import com.sprint.mission.discodeit.exception.userstatus.UserStatusNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.service.UserService;
@@ -85,9 +86,16 @@ public class BasicUserService implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse find(UUID userId) {
         User user = findUserEntity(userId);
         UserStatus userStatus = user.getUserStatus();
+
+        if (userStatus == null) {
+            throw new UserStatusNotFoundException(
+                    "사용자 ID " + user.getId() + "에 해당하는 UserStatus를 찾을 수 없습니다."
+            );
+        }
 
         userStatus.updateOnlineStatus();
 
@@ -103,11 +111,18 @@ public class BasicUserService implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserListResponse findAll() {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
         for (User user : users) {
             UserStatus userStatus = user.getUserStatus();
+
+            if (userStatus == null) {
+                throw new UserStatusNotFoundException(
+                        "사용자 ID " + user.getId() + "에 해당하는 UserStatus를 찾을 수 없습니다."
+                );
+            }
             userStatus.updateOnlineStatus();
 
             userResponses.add(this.userMapper.toUserResponse(user, userStatus));
