@@ -1,21 +1,19 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusListResponse;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusResponse;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.ReadStatus;
-import com.sprint.mission.discodeit.exception.DuplicateResourceException;
-import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.readstatus.ReadStatusNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.ReadStatusMapper;
-import com.sprint.mission.discodeit.oldrepository.ChannelRepository;
-import com.sprint.mission.discodeit.oldrepository.ReadStatusRepository;
-import com.sprint.mission.discodeit.oldrepository.UserRepository;
+import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ReadStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +29,7 @@ public class BasicReadStatusService implements ReadStatusService {
 
     private final ReadStatusMapper readStatusMapper;
 
+    /*
     @Override
     public ReadStatusResponse create(ReadStatusCreateRequest request) {
         if (!this.userRepository.existsById(request.userId())) {
@@ -58,6 +57,7 @@ public class BasicReadStatusService implements ReadStatusService {
 
         return this.readStatusMapper.toReadStatusResponse(readStatus);
     }
+     */
 
     @Override
     public ReadStatusResponse find(UUID readStatusId) {
@@ -82,9 +82,9 @@ public class BasicReadStatusService implements ReadStatusService {
             );
         }
 
-        List<ReadStatus> readStatus = this.readStatusRepository.findAllByUserId(userId);
+        List<ReadStatus> readStatuses = this.readStatusRepository.findAllByUserId(userId);
 
-        List<ReadStatusResponse> readStatusResponses = readStatus.stream()
+        List<ReadStatusResponse> readStatusResponses = readStatuses.stream()
                 .map(this.readStatusMapper::toReadStatusResponse)
                 .toList();
 
@@ -92,12 +92,15 @@ public class BasicReadStatusService implements ReadStatusService {
     }
 
     @Override
+    @Transactional
     public ReadStatusResponse update(UUID readStatusID, ReadStatusUpdateRequest request) {
         ReadStatus readStatus = this.findReadStatusEntity(readStatusID);
 
         // readStatus.update();
         readStatus.updateLastReadAt(request.newLastReadAt());
-        this.readStatusRepository.save(readStatus);
+        // this.readStatusRepository.save(readStatus);
+
+        this.readStatusRepository.flush();
 
         return this.readStatusMapper.toReadStatusResponse(readStatus);
     }
