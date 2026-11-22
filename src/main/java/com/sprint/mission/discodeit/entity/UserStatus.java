@@ -14,7 +14,6 @@ import java.util.UUID;
 @Table(name = "user_statuses")
 @NoArgsConstructor
 public class UserStatus extends BaseUpdatableEntity {
-    // private final UUID userId;
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
@@ -26,14 +25,6 @@ public class UserStatus extends BaseUpdatableEntity {
     public void setUser(User user) {
         this.user = user;
     }
-    /*
-    public UserStatus(UUID userId) {
-        this.id =  UUID.randomUUID();
-        this.userId = userId;
-        this.isOnline = true;
-        this.lastActiveAt = Instant.now();
-    }
-     */
 
     public UserStatus(User user) {
         this.id = UUID.randomUUID();

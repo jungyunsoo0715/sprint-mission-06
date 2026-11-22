@@ -14,25 +14,14 @@ import java.util.UUID;
 @Table(name = "read_statuses")
 @NoArgsConstructor
 public class ReadStatus extends BaseUpdatableEntity {
-    // private final UUID userId;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    // private final UUID channelId;
     @ManyToOne
     @JoinColumn(name = "channel_id", nullable = false)
     private Channel channel;
     @Column(name = "last_read_at", nullable = false)
     private Instant lastReadAt;
-
-    /*
-    public ReadStatus(UUID userId, UUID channelId) {
-        this.id = UUID.randomUUID();
-        this.userId = userId;
-        this.channelId = channelId;
-        this.lastReadAt = Instant.now();
-    }
-     */
 
     public ReadStatus(User user, Channel channel) {
         this.id = UUID.randomUUID();
