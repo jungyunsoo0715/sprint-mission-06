@@ -169,6 +169,16 @@ public class BasicUserService implements UserService {
             this.binaryContentRepository.delete(oldProfile);
         }
 
+        /**
+         * user.update()를 호출하면, user의 필드만 바꿀 뿐, updatedAt은 바뀌지 않습니다.
+         * 이는 updatedAt은 변경 사항이 DB에 반영 될 때, 직전에 바뀌기 때문인데, user.update()는
+         * 객체의 필드만 변경할 뿐 이를 DB에 반영하지는 않습니다.
+         * 따라서 userRepository.flush()를 해주면 User객체의 updatedAt이 갱신되고,
+         * 변경 사항이 DB에 반영됩니다.
+         * user역시 영속성 컨텍스트에 의해 updatedAt의 변경 내역이 반영됩니다.
+         */
+        this.userRepository.flush();
+
         return this.userMapper.toUserDto(user);
     }
 
