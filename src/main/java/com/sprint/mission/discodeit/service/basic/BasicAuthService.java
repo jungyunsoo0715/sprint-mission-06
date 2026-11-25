@@ -39,7 +39,7 @@ public class BasicAuthService implements AuthService {
                 .orElseThrow((() -> new UserNotFoundException(
                         "사용자 이름이 " + loginRequest.username() + "인 사용자를 찾을 수 없습니다.")));
          */
-        User user = this.userRepository.findByUsername();
+        User user = this.userRepository.findByUsername(loginRequest.username());
 
         if (!user.getPassword().equals(loginRequest.password())) {
             throw new IllegalArgumentException(

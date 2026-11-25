@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
     ReadStatus save(ReadStatus readStatus);
-    void saveAll(List<ReadStatus> readStatusList);
     Optional<ReadStatus> findById(UUID readStatusId);
     List<ReadStatus> findAll();
     List<ReadStatus> findAllByUserId(UUID userId);

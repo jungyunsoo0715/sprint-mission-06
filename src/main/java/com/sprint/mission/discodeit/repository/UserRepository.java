@@ -10,7 +10,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByEmail(String email);
 
-    User findByUsername();
+    User findByUsername(String username);
     /* JpaRepository가 기본적으로 제공하는 메서드입니다
     User save(User user);
     Optional<User> findById(UUID id);
