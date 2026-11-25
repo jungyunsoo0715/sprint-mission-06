@@ -6,12 +6,12 @@ import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.exception.binarycontent.BinaryContentNotFoundException;
 import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
-import com.sprint.mission.discodeit.oldrepository.BinaryContentRepository;
+import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,19 +24,21 @@ public class BasicBinaryContentService implements BinaryContentService {
     private final BinaryContentMapper binaryContentMapper;
 
     @Override
+    @Transactional
     public BinaryContentResponse create(BinaryContentCreateRequest request) {
         BinaryContent binaryContent = new BinaryContent(
                 request.fileName(),
                 request.size(),
                 request.contentType(),
                 request.bytes());
-        this.binaryContentRepository.save(binaryContent);
+        binaryContent = this.binaryContentRepository.save(binaryContent);
 
         return this.binaryContentMapper.toBinaryContentResponse(binaryContent);
     }
 
 
     @Override
+    @Transactional(readOnly = true)
     public BinaryContentResponse find(UUID binaryContentId) {
         BinaryContent binaryContent =
                 this.binaryContentRepository.findById(binaryContentId)
@@ -48,25 +50,21 @@ public class BasicBinaryContentService implements BinaryContentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BinaryContentListResponse findAllByIdIn(List<UUID> binaryContentIds) {
-        List<BinaryContentResponse> binaryContentResponses = new ArrayList<>();
 
-        for (UUID binaryContentId : binaryContentIds) {
-            BinaryContent binaryContent =
-                    this.binaryContentRepository.findById(binaryContentId)
-                    .orElseThrow(() -> new BinaryContentNotFoundException(
-                            "ID가 " + binaryContentId + "인 파일을 찾을 수 없습니다."
-                    ));
-            BinaryContentResponse binaryContentResponse =
-                    this.binaryContentMapper.toBinaryContentResponse(binaryContent);
+        List<BinaryContent> binaryContents =
+                    this.binaryContentRepository.findAllById(binaryContentIds);
 
-            binaryContentResponses.add(binaryContentResponse);
-        }
+        List<BinaryContentResponse> binaryContentResponses = binaryContents.stream()
+                .map(this.binaryContentMapper::toBinaryContentResponse)
+                .toList();
 
         return new BinaryContentListResponse(binaryContentResponses);
     }
 
     @Override
+    @Transactional
     public void delete(UUID id) {
         if (!this.binaryContentRepository.existsById(id)) {
             throw new BinaryContentNotFoundException(
