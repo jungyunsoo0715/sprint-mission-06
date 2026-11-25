@@ -8,7 +8,7 @@ import com.sprint.mission.discodeit.dto.readstatus.ReadStatusUpdateRequest;
 import java.util.UUID;
 
 public interface ReadStatusService {
-    // ReadStatusResponse create(ReadStatusCreateRequest request);
+    ReadStatusResponse create(ReadStatusCreateRequest request);
 
     ReadStatusResponse find(UUID readStatusId);
 
