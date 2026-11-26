@@ -101,7 +101,7 @@ public class MessageController {
                     description = "첨부파일 또는 전체 multipart 요청의 크기가 서버 제한을 초과했습니다."
             )
     })
-    public ResponseEntity<MessageResponse> createMessage(
+    public ResponseEntity<MessageDto> createMessage(
             @Parameter(
                     description = "메시지 내용, 채널 UUID, 작성자 UUID를 포함하는 필수 JSON 파트",
                     required = true
@@ -113,10 +113,10 @@ public class MessageController {
             @RequestPart(value = "attachments", required = false)
             List<MultipartFile> attachments
     ) {
-        MessageResponse messageResponse =
+        MessageDto messageDto =
                 this.messageService.create(request, attachments);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(messageResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(messageDto);
     }
 
     @PatchMapping("/{messageId}")
@@ -166,14 +166,14 @@ public class MessageController {
                     )
             )
     })
-    public ResponseEntity<MessageResponse> updateMessage(
+    public ResponseEntity<MessageDto> updateMessage(
             @PathVariable("messageId") UUID messageId,
             @RequestBody MessageUpdateRequest request
     ) {
-        MessageResponse messageResponse = this.messageService.update(
+        MessageDto messageDto = this.messageService.update(
                 messageId, request, null);
 
-        return ResponseEntity.ok(messageResponse);
+        return ResponseEntity.ok(messageDto);
     }
 
     @GetMapping("/{messageId}")
@@ -223,12 +223,12 @@ public class MessageController {
                     )
             )
     })
-    public ResponseEntity<MessageResponse> findMessage(
+    public ResponseEntity<MessageDto> findMessage(
             @PathVariable("messageId") UUID messageId
     ) {
-        MessageResponse messageResponse = this.messageService.find(messageId);
+        MessageDto messageDto = this.messageService.find(messageId);
 
-        return ResponseEntity.ok(messageResponse);
+        return ResponseEntity.ok(messageDto);
     }
 
     @GetMapping

@@ -1,9 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
-import com.sprint.mission.discodeit.dto.message.MessageListResponse;
-import com.sprint.mission.discodeit.dto.message.MessageResponse;
-import com.sprint.mission.discodeit.dto.message.MessageUpdateRequest;
+import com.sprint.mission.discodeit.dto.message.*;
 import com.sprint.mission.discodeit.entity.*;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
@@ -36,7 +33,7 @@ public class BasicMessageService implements MessageService {
 
     @Override
     @Transactional
-    public MessageResponse create(
+    public MessageDto create(
             MessageCreateRequest request,
             List<MultipartFile> attachments) {
         /*
@@ -84,7 +81,7 @@ public class BasicMessageService implements MessageService {
 
         message = messageRepository.save(message);
 
-        return this.messageMapper.toMessageResponse(message);
+        return this.messageMapper.toDto(message);
     }
 
     private List<BinaryContent> createBinaryContents (
@@ -117,10 +114,10 @@ public class BasicMessageService implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public MessageResponse find(UUID messageId) {
+    public MessageDto find(UUID messageId) {
         Message message = this.findMessageEntity(messageId);
 
-        return this.messageMapper.toMessageResponse(message);
+        return this.messageMapper.toDto(message);
     }
 
     private Message findMessageEntity(UUID messageId) {
@@ -157,7 +154,7 @@ public class BasicMessageService implements MessageService {
 
     @Override
     @Transactional
-    public MessageResponse update(
+    public MessageDto update(
             UUID messageId,
             MessageUpdateRequest request,
             List<MultipartFile> attachments) {
@@ -183,7 +180,7 @@ public class BasicMessageService implements MessageService {
 
         this.messageRepository.flush();
 
-        return this.messageMapper.toMessageResponse(message);
+        return this.messageMapper.toDto(message);
     }
 
     @Override
