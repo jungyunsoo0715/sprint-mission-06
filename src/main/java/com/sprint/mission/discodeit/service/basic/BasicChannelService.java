@@ -77,7 +77,7 @@ public class BasicChannelService implements ChannelService {
         Channel publicChannel = new Channel(request);
         publicChannel = this.channelRepository.save(publicChannel);
 
-        return this.channelMapper.toChannelDto(publicChannel);
+        return this.channelMapper.toDto(publicChannel);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class BasicChannelService implements ChannelService {
 
         this.readStatusRepository.saveAll(readStatusList);
 
-        return this.channelMapper.toChannelDto(privateChannelPersisted);
+        return this.channelMapper.toDto(privateChannelPersisted);
     }
 
     /*
@@ -255,7 +255,7 @@ public class BasicChannelService implements ChannelService {
 
         this.channelRepository.flush();
 
-        return this.channelMapper.toChannelDto(channel);
+        return this.channelMapper.toDto(channel);
     }
 
     @Override
