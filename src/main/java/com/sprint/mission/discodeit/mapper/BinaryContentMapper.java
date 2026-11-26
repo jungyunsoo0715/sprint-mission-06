@@ -1,17 +1,19 @@
 package com.sprint.mission.discodeit.mapper;
 
+import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class BinaryContentMapper {
-    public BinaryContentResponse toBinaryContentResponse(
+    public BinaryContentDto toDto(
             @NonNull BinaryContent binaryContent) {
-        return new BinaryContentResponse(
+        return new BinaryContentDto(
                 binaryContent.getId(),
-                binaryContent.getCreatedAt(),
                 binaryContent.getFileName(),
                 binaryContent.getSize(),
                 binaryContent.getContentType(),

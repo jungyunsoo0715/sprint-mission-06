@@ -1,7 +1,9 @@
 package com.sprint.mission.discodeit.mapper;
 
+import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.UserResponse;
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -10,22 +12,23 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper {
-    public UserDto toUserDto(User user) {
-        UUID profileId = null;
+    private final BinaryContentMapper binaryContentMapper;
+
+    public UserDto toDto(User user) {
+        BinaryContentDto profile = null;
 
         if (user.getProfile() != null) {
-            profileId = user.getProfile().getId();
+            profile = this.binaryContentMapper.toDto(user.getProfile());
         }
 
         return new UserDto(
                 user.getId(),
-                user.getCreatedAt(),
-                user.getUpdatedAt(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getPassword(),
-                profileId
+                profile,
+                user.getUserStatus().isOnline()
         );
     }
 
