@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
+import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentListResponse;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentResponse;
 import com.sprint.mission.discodeit.service.BinaryContentService;
@@ -77,13 +78,13 @@ public class BinaryContentController {
                     }
             )
     })
-    public ResponseEntity<BinaryContentResponse> createBinaryContent(
+    public ResponseEntity<BinaryContentDto> createBinaryContent(
             @Valid @RequestBody BinaryContentCreateRequest request
     ) {
-        BinaryContentResponse binaryContentResponse =
+        BinaryContentDto binaryContentDto =
                 this.binaryContentService.create(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(binaryContentResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(binaryContentDto);
     }
 
     @GetMapping("/{binaryContentId}")
@@ -132,13 +133,13 @@ public class BinaryContentController {
                     )
             )
     })
-    public ResponseEntity<BinaryContentResponse> findBinaryContentsById(
+    public ResponseEntity<BinaryContentDto> findBinaryContentsById(
             @PathVariable("binaryContentId") UUID binaryContentId
     ) {
-        BinaryContentResponse binaryContentResponse =
+        BinaryContentDto binaryContentDto =
                 this.binaryContentService.find(binaryContentId);
 
-        return ResponseEntity.ok(binaryContentResponse);
+        return ResponseEntity.ok(binaryContentDto);
     }
 
     @GetMapping
@@ -191,7 +192,7 @@ public class BinaryContentController {
                     )
             )
     })
-    public ResponseEntity<List<BinaryContentResponse>> findBinaryContentsByIds(
+    public ResponseEntity<List<BinaryContentDto>> findBinaryContentsByIds(
             @RequestParam("binaryContentIds") List<UUID> binaryContentIds
     ) {
         BinaryContentListResponse binaryContentListResponse
@@ -249,20 +250,20 @@ public class BinaryContentController {
             @PathVariable("binary-content-id") UUID binaryContentId
     ) {
 
-        BinaryContentResponse response =
+        BinaryContentDto binaryContentDto =
                 this.binaryContentService.find(binaryContentId);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(response.contentType()))
+                .contentType(MediaType.parseMediaType(binaryContentDto.contentType()))
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment()
-                                .filename(response.fileName(), StandardCharsets.UTF_8)
+                                .filename(binaryContentDto.fileName(), StandardCharsets.UTF_8)
                                 .build()
                                 .toString()
                 )
-                .contentLength(response.bytes().length)
-                .body(response.bytes());
+                .contentLength(binaryContentDto.bytes().length)
+                .body(binaryContentDto.bytes());
     }
 
     @DeleteMapping("/{binary-content-id}")

@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
+import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentListResponse;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
@@ -25,7 +26,7 @@ public class BasicBinaryContentService implements BinaryContentService {
 
     @Override
     @Transactional
-    public BinaryContentResponse create(BinaryContentCreateRequest request) {
+    public BinaryContentDto create(BinaryContentCreateRequest request) {
         BinaryContent binaryContent = new BinaryContent(
                 request.fileName(),
                 request.size(),
@@ -33,20 +34,20 @@ public class BasicBinaryContentService implements BinaryContentService {
                 request.bytes());
         binaryContent = this.binaryContentRepository.save(binaryContent);
 
-        return this.binaryContentMapper.toBinaryContentResponse(binaryContent);
+        return this.binaryContentMapper.toDto(binaryContent);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public BinaryContentResponse find(UUID binaryContentId) {
+    public BinaryContentDto find(UUID binaryContentId) {
         BinaryContent binaryContent =
                 this.binaryContentRepository.findById(binaryContentId)
                 .orElseThrow(() -> new BinaryContentNotFoundException(
                         "ID가 " + binaryContentId + "인 파일을 찾을 수 없습니다."
                 ));
 
-        return this.binaryContentMapper.toBinaryContentResponse(binaryContent);
+        return this.binaryContentMapper.toDto(binaryContent);
     }
 
     @Override
@@ -56,11 +57,11 @@ public class BasicBinaryContentService implements BinaryContentService {
         List<BinaryContent> binaryContents =
                     this.binaryContentRepository.findAllById(binaryContentIds);
 
-        List<BinaryContentResponse> binaryContentResponses = binaryContents.stream()
-                .map(this.binaryContentMapper::toBinaryContentResponse)
+        List<BinaryContentDto> binaryContentDtos = binaryContents.stream()
+                .map(this.binaryContentMapper::toDto)
                 .toList();
 
-        return new BinaryContentListResponse(binaryContentResponses);
+        return new BinaryContentListResponse(binaryContentDtos);
     }
 
     @Override
