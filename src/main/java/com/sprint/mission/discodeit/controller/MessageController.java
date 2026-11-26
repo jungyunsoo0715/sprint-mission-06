@@ -282,7 +282,7 @@ public class MessageController {
                     )
             )
     })
-    public ResponseEntity<List<MessageResponse>> findAllMessage(
+    public ResponseEntity<List<MessageDto>> findAllMessage(
             @RequestParam("channelId") UUID channelId
     ) {
         MessageListResponse messageResponseList =
