@@ -144,12 +144,12 @@ public class BasicMessageService implements MessageService {
                 .toList();
          */
 
-        List<MessageResponse> messageResponses =
+        List<MessageDto> messageDtos =
                 messageRepository.findAllByChannelId(channelId).stream()
-                .map(this.messageMapper::toMessageResponse)
+                .map(this.messageMapper::toDto)
                 .toList();
 
-        return new MessageListResponse(messageResponses);
+        return new MessageListResponse(messageDtos);
     }
 
     @Override

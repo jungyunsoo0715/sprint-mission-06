@@ -1,9 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusCreateRequest;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusListResponse;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusResponse;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusUpdateRequest;
+import com.sprint.mission.discodeit.dto.readstatus.*;
 import com.sprint.mission.discodeit.service.ReadStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -103,13 +100,13 @@ public class ReadStatusController {
                     )
             )
     })
-    public ResponseEntity<ReadStatusResponse> createReadStatus(
+    public ResponseEntity<ReadStatusDto> createReadStatus(
             @Valid @RequestBody ReadStatusCreateRequest request
     ) {
-        ReadStatusResponse readStatusResponse =
+        ReadStatusDto readStatusDto =
                 this.readStatusService.create(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(readStatusResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(readStatusDto);
     }
 
     @PatchMapping("/{readStatusId}")
@@ -158,14 +155,14 @@ public class ReadStatusController {
                     )
             )
     })
-    public ResponseEntity<ReadStatusResponse> updateReadStatus(
+    public ResponseEntity<ReadStatusDto> updateReadStatus(
             @PathVariable("readStatusId") UUID readStatusId,
             @Valid @RequestBody ReadStatusUpdateRequest request
     ) {
-        ReadStatusResponse readStatusResponse =
+        ReadStatusDto readStatusDto =
                 this.readStatusService.update(readStatusId, request);
 
-        return ResponseEntity.ok(readStatusResponse);
+        return ResponseEntity.ok(readStatusDto);
     }
 
     @GetMapping
@@ -218,12 +215,12 @@ public class ReadStatusController {
                     )
             )
     })
-    public ResponseEntity<List<ReadStatusResponse>> findReadStatusesByUserId(
+    public ResponseEntity<List<ReadStatusDto>> findReadStatusesByUserId(
             @RequestParam("userId") UUID userId
     ) {
-        ReadStatusListResponse readStatusListResponse =
+        ReadStatusListResponse readStatusDtos =
                 this.readStatusService.findAllByUserId(userId);
 
-        return ResponseEntity.ok(readStatusListResponse.readStatuses());
+        return ResponseEntity.ok(readStatusDtos.readStatuses());
     }
 }

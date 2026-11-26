@@ -1,9 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusCreateRequest;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusListResponse;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusResponse;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusUpdateRequest;
+import com.sprint.mission.discodeit.dto.readstatus.*;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
@@ -36,7 +33,7 @@ public class BasicReadStatusService implements ReadStatusService {
 
     @Override
     @Transactional
-    public ReadStatusResponse create(ReadStatusCreateRequest request) {
+    public ReadStatusDto create(ReadStatusCreateRequest request) {
         /*
         if (!this.userRepository.existsById(request.userId())) {
             throw new UserNotFoundException(
@@ -71,14 +68,14 @@ public class BasicReadStatusService implements ReadStatusService {
 
         readStatus = readStatusRepository.save(readStatus);
 
-        return this.readStatusMapper.toReadStatusResponse(readStatus);
+        return this.readStatusMapper.toDto(readStatus);
     }
 
     @Override
-    public ReadStatusResponse find(UUID readStatusId) {
+    public ReadStatusDto find(UUID readStatusId) {
         ReadStatus readStatus = this.findReadStatusEntity(readStatusId);
 
-        return this.readStatusMapper.toReadStatusResponse(readStatus);
+        return this.readStatusMapper.toDto(readStatus);
     }
 
     private ReadStatus findReadStatusEntity(UUID readStatusId) {
@@ -99,16 +96,16 @@ public class BasicReadStatusService implements ReadStatusService {
 
         List<ReadStatus> readStatuses = this.readStatusRepository.findAllByUserId(userId);
 
-        List<ReadStatusResponse> readStatusResponses = readStatuses.stream()
-                .map(this.readStatusMapper::toReadStatusResponse)
+        List<ReadStatusDto> readStatusDtos = readStatuses.stream()
+                .map(this.readStatusMapper::toDto)
                 .toList();
 
-        return new ReadStatusListResponse(readStatusResponses);
+        return new ReadStatusListResponse(readStatusDtos);
     }
 
     @Override
     @Transactional
-    public ReadStatusResponse update(UUID readStatusID, ReadStatusUpdateRequest request) {
+    public ReadStatusDto update(UUID readStatusID, ReadStatusUpdateRequest request) {
         ReadStatus readStatus = this.findReadStatusEntity(readStatusID);
 
         // readStatus.update();
@@ -117,7 +114,7 @@ public class BasicReadStatusService implements ReadStatusService {
 
         this.readStatusRepository.flush();
 
-        return this.readStatusMapper.toReadStatusResponse(readStatus);
+        return this.readStatusMapper.toDto(readStatus);
     }
 
     @Override
