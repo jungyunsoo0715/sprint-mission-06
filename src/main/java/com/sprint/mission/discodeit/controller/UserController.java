@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.user.*;
+import com.sprint.mission.discodeit.dto.userstatus.UserStatusDto;
 import com.sprint.mission.discodeit.dto.userstatus.UserStatusResponse;
 import com.sprint.mission.discodeit.dto.userstatus.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.service.UserService;
@@ -341,13 +342,13 @@ public class UserController {
                     )
             )
     })
-    public ResponseEntity<UserStatusResponse> updateUserOnlineStatus(
+    public ResponseEntity<UserStatusDto> updateUserOnlineStatus(
             @PathVariable("userId") UUID userId,
             @Valid @RequestBody UserStatusUpdateRequest request
     ) {
-        UserStatusResponse userStatusResponse =
+        UserStatusDto userStatusDto =
                 this.userStatusService.updateByUserId(userId);
 
-        return ResponseEntity.ok(userStatusResponse);
+        return ResponseEntity.ok(userStatusDto);
     }
 }

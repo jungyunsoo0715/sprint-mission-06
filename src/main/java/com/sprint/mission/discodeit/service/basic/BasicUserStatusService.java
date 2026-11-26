@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.userstatus.UserStatusDto;
 import com.sprint.mission.discodeit.dto.userstatus.UserStatusListResponse;
 import com.sprint.mission.discodeit.dto.userstatus.UserStatusResponse;
 import com.sprint.mission.discodeit.dto.userstatus.UserStatusUpdateRequest;
@@ -50,28 +51,28 @@ public class BasicUserStatusService implements UserStatusService {
      */
 
     @Override
-    public UserStatusResponse find(UUID userStatusId) {
+    public UserStatusDto find(UUID userStatusId) {
         UserStatus userStatus = this.userStatusRepository.findById(userStatusId)
                 .orElseThrow(() -> new UserStatusNotFoundException(
                         "ID가 " + userStatusId + "인 사용자 상태 정보를 찾을 수 없습니다."
                 ));
 
-        return this.userStatusMapper.toUserStatusResponse(userStatus);
+        return this.userStatusMapper.toDto(userStatus);
     }
 
     @Override
     public UserStatusListResponse findAll() {
         List<UserStatus> userStatuses = this.userStatusRepository.findAll();
 
-        List<UserStatusResponse> userStatusResponses = userStatuses.stream()
-                .map(this.userStatusMapper::toUserStatusResponse)
+        List<UserStatusDto> userStatusDtos = userStatuses.stream()
+                .map(this.userStatusMapper::toDto)
                 .toList();
 
-        return new UserStatusListResponse(userStatusResponses);
+        return new UserStatusListResponse(userStatusDtos);
     }
 
     @Override
-    public UserStatusResponse update(UUID userStatusId, UserStatusUpdateRequest request) {
+    public UserStatusDto update(UUID userStatusId, UserStatusUpdateRequest request) {
         UserStatus userStatus = this.userStatusRepository.findById(userStatusId)
                 .orElseThrow(() -> new UserStatusNotFoundException(
                                 "ID가 " + userStatusId + "인 사용자 상태 정보를 찾을 수 없습니다."
@@ -80,12 +81,12 @@ public class BasicUserStatusService implements UserStatusService {
         userStatus.update();
         this.userStatusRepository.save(userStatus);
 
-        return this.userStatusMapper.toUserStatusResponse(userStatus);
+        return this.userStatusMapper.toDto(userStatus);
     }
 
     @Override
     @Transactional
-    public UserStatusResponse updateByUserId(UUID userId) {
+    public UserStatusDto updateByUserId(UUID userId) {
 
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() ->
@@ -104,7 +105,7 @@ public class BasicUserStatusService implements UserStatusService {
 
         this.userStatusRepository.flush();
         // this.userStatusRepository.save(userStatus);
-        return this.userStatusMapper.toUserStatusResponse(userStatus);
+        return this.userStatusMapper.toDto(userStatus);
     }
 
     @Override
