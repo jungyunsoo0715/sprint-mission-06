@@ -52,7 +52,7 @@ public class BasicUserService implements UserService {
 
         user = this.userRepository.save(user);
 
-        return this.userMapper.toUserDto(user);
+        return this.userMapper.toDto(user);
     }
 
     private BinaryContent createProfileImage(MultipartFile profile) throws IOException {
@@ -179,7 +179,7 @@ public class BasicUserService implements UserService {
          */
         this.userRepository.flush();
 
-        return this.userMapper.toUserDto(user);
+        return this.userMapper.toDto(user);
     }
 
     @Override
