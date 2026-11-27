@@ -4,7 +4,9 @@ import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentListResponse;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentResponse;
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.service.BinaryContentService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,9 +17,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +36,7 @@ import java.util.UUID;
 public class BinaryContentController {
 
     private final BinaryContentService binaryContentService;
+    private final BinaryContentStorage binaryContentStorage;
 
     @PostMapping
     @Operation(
@@ -203,68 +208,77 @@ public class BinaryContentController {
         );
     }
 
-    @GetMapping("/{binary-content-id}/download")
-    @Operation(
-            summary = "BinaryContent 다운로드",
-            description = "지정한 BinaryContent의 원본 바이너리 데이터를 파일로 다운로드합니다. 응답의 Content-Type은 저장된 파일의 콘텐츠 유형에 따라 결정됩니다."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "BinaryContent 다운로드에 성공했습니다.",
-                    content = @Content(
-                            mediaType = "*/*",
-                            schema = @Schema(
-                                    type = "string",
-                                    format = "binary"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "binary-content-id의 UUID 형식이 올바르지 않거나 저장된 콘텐츠 유형이 유효하지 않습니다.",
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(type = "object")
-                            ),
-                            @Content(
-                                    mediaType = MediaType.TEXT_PLAIN_VALUE,
-                                    schema = @Schema(type = "string")
-                            )
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "다운로드할 BinaryContent가 존재하지 않습니다.",
-                    content = @Content(
-                            mediaType = MediaType.TEXT_PLAIN_VALUE,
-                            schema = @Schema(type = "string"),
-                            examples = @ExampleObject(
-                                    value = "ID가 550e8400-e29b-41d4-a716-446655440003인 파일을 찾을 수 없습니다."
-                            )
-                    )
-            )
-    })
-    public ResponseEntity<byte[]> downloadBinaryContent(
-            @PathVariable("binary-content-id") UUID binaryContentId
+    @GetMapping("/api/binaryContents/{binaryContentId}/download")
+    public ResponseEntity<?> downloadBinaryContent(
+            @PathVariable("binaryContentId") UUID binaryContentId
     ) {
+        BinaryContentDto binaryContentDto = this.binaryContentService.find(binaryContentId);
 
-        BinaryContentDto binaryContentDto =
-                this.binaryContentService.find(binaryContentId);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(binaryContentDto.contentType()))
-                .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        ContentDisposition.attachment()
-                                .filename(binaryContentDto.fileName(), StandardCharsets.UTF_8)
-                                .build()
-                                .toString()
-                )
-                .contentLength(binaryContentDto.bytes().length)
-                .body(binaryContentDto.bytes());
+        return this.binaryContentStorage.download(binaryContentDto);
     }
+
+//    @GetMapping("/{binary-content-id}/download")
+//    @Operation(
+//            summary = "BinaryContent 다운로드",
+//            description = "지정한 BinaryContent의 원본 바이너리 데이터를 파일로 다운로드합니다. 응답의 Content-Type은 저장된 파일의 콘텐츠 유형에 따라 결정됩니다."
+//    )
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "BinaryContent 다운로드에 성공했습니다.",
+//                    content = @Content(
+//                            mediaType = "*/*",
+//                            schema = @Schema(
+//                                    type = "string",
+//                                    format = "binary"
+//                            )
+//                    )
+//            ),
+//            @ApiResponse(
+//                    responseCode = "400",
+//                    description = "binary-content-id의 UUID 형식이 올바르지 않거나 저장된 콘텐츠 유형이 유효하지 않습니다.",
+//                    content = {
+//                            @Content(
+//                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+//                                    schema = @Schema(type = "object")
+//                            ),
+//                            @Content(
+//                                    mediaType = MediaType.TEXT_PLAIN_VALUE,
+//                                    schema = @Schema(type = "string")
+//                            )
+//                    }
+//            ),
+//            @ApiResponse(
+//                    responseCode = "404",
+//                    description = "다운로드할 BinaryContent가 존재하지 않습니다.",
+//                    content = @Content(
+//                            mediaType = MediaType.TEXT_PLAIN_VALUE,
+//                            schema = @Schema(type = "string"),
+//                            examples = @ExampleObject(
+//                                    value = "ID가 550e8400-e29b-41d4-a716-446655440003인 파일을 찾을 수 없습니다."
+//                            )
+//                    )
+//            )
+//    })
+//    public ResponseEntity<byte[]> downloadBinaryContent(
+//            @PathVariable("binary-content-id") UUID binaryContentId
+//    ) {
+//
+//        BinaryContentDto binaryContentDto =
+//                this.binaryContentService.find(binaryContentId);
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(binaryContentDto.contentType()))
+//                .header(
+//                        HttpHeaders.CONTENT_DISPOSITION,
+//                        ContentDisposition.attachment()
+//                                .filename(binaryContentDto.fileName(), StandardCharsets.UTF_8)
+//                                .build()
+//                                .toString()
+//                )
+//                .contentLength(binaryContentDto.bytes().length)
+//                .body(binaryContentDto.bytes());
+//    }
 
     @DeleteMapping("/{binary-content-id}")
     @Operation(
