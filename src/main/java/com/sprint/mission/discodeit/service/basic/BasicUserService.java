@@ -39,18 +39,7 @@ public class BasicUserService implements UserService {
         BinaryContent profileImage = null;
 
         if (profile != null) {
-            // 아래 코드에서 profile.getBytes()는 IOException(Checked Exception)을 발생시킬 수 있기 때문에
-            // 기본 @Transactional 설정에서는 자동으로 롤백되지 않습니다. 때문에
-            // createProfileImage()의 save()까지는 호출되지만,
-            // getBytes()에서 예외가 발생하면 put()은 호출되지 않습니다.
-            // profileImage = this.createProfileImage(profile);
-            // this.binaryContentStorage.put(profileImage.getId(), profile.getBytes());
-
-            // 때문에, profile.getBytes()를 먼저 호출해서 예외가 발생하지 않으면
-            // 이후 코드를 실행하게 하는 것이 적합합니다.
-            byte[] bytes = profile.getBytes();
             profileImage = this.createProfileImage(profile);
-            this.binaryContentStorage.put(profileImage.getId(), bytes);
         }
 
         User user = new User(profileImage,
@@ -70,13 +59,18 @@ public class BasicUserService implements UserService {
     }
 
     private BinaryContent createProfileImage(MultipartFile profile) throws IOException {
-            BinaryContent profileImage = new BinaryContent(
-                    profile.getOriginalFilename(),
-                    profile.getSize(),
-                    profile.getContentType()
-            );
+        byte[] bytes = profile.getBytes();
 
-        return this.binaryContentRepository.save(profileImage);
+        BinaryContent profileImage = new BinaryContent(
+                profile.getOriginalFilename(),
+                profile.getSize(),
+                profile.getContentType()
+        );
+
+        profileImage = this.binaryContentRepository.save(profileImage);
+        this.binaryContentStorage.put(profileImage.getId(), bytes);
+
+        return profileImage;
     }
 
     private void validateUniqueUsername(String username) {
@@ -169,17 +163,15 @@ public class BasicUserService implements UserService {
 
 
         if (profile != null) {
-            byte[] bytes = profile.getBytes();
-
             if (profileImage != null) {
+                byte[] bytes = profile.getBytes();
                 profileImage.setFileName(profile.getOriginalFilename());
                 profileImage.setSize(profile.getSize());
                 profileImage.setContentType(profile.getContentType());
+                this.binaryContentStorage.put(profileImage.getId(), bytes);
             } else {
                 profileImage = this.createProfileImage(profile);
             }
-
-            this.binaryContentStorage.put(profileImage.getId(), bytes);
         }
 
         user.update(

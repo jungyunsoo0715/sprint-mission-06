@@ -36,18 +36,6 @@ public class BasicMessageService implements MessageService {
     public MessageDto create(
             MessageCreateRequest request,
             List<MultipartFile> attachments) {
-        /*
-        if (!channelRepository.existsById(request.channelId())) {
-            throw new ChannelNotFoundException(
-                    "ID가 " + request.channelId() + "인 채널을 찾을 수 없습니다."
-            );
-        }
-        if (!userRepository.existsById(request.authorId())) {
-            throw new UserNotFoundException(
-                    "ID가 " + request.authorId() + "인 사용자를 찾을 수 없습니다."
-            );
-        }
-         */
 
         Channel channel = this.channelRepository.findById(request.channelId())
                 .orElseThrow(() ->
@@ -63,14 +51,6 @@ public class BasicMessageService implements MessageService {
         List<BinaryContent> newAttachments = null;
 
         newAttachments = createBinaryContents(attachments);
-
-        /*
-        Message message = new Message(
-                request.content(),
-                request.channelId(),
-                request.authorId(),
-                newAttachmentIds);
-         */
 
         Message message = new Message(
                 request.content(),
@@ -93,21 +73,12 @@ public class BasicMessageService implements MessageService {
 
         List<BinaryContent> binaryContents = attachments.stream()
                 .map(a -> {
-                    try {
-                        return new BinaryContent(
-                                a.getOriginalFilename(),
-                                a.getSize(),
-                                a.getContentType(),
-                                a.getBytes()
-                        );
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    return new BinaryContent(
+                            a.getOriginalFilename(),
+                            a.getSize(),
+                            a.getContentType()
+                    );
                 }).toList();
-
-        // binaryContents.forEach(this.binaryContentRepository::save);
-
-        // return binaryContents;
 
         return this.binaryContentRepository.saveAll(binaryContents);
     }
@@ -137,13 +108,6 @@ public class BasicMessageService implements MessageService {
             );
         }
 
-        /*
-        List<MessageResponse> messageResponses = messageRepository.findAll().stream()
-                .filter(m -> m.getChannelId().equals(channelId))
-                .map(this.messageMapper::toMessageResponse)
-                .toList();
-         */
-
         List<MessageDto> messageDtos =
                 messageRepository.findAllByChannelId(channelId).stream()
                 .map(this.messageMapper::toDto)
@@ -169,14 +133,8 @@ public class BasicMessageService implements MessageService {
         }
 
         List<BinaryContent> newAttachments= createBinaryContents(attachments);
-        /*
-        List<UUID> newAttachmentIds = binaryContents.stream()
-                .map(BinaryContent::getId)
-                .toList();
-         */
 
         message.update(newContent, newAttachments);
-        // this.messageRepository.save(message);
 
         this.messageRepository.flush();
 
@@ -187,14 +145,7 @@ public class BasicMessageService implements MessageService {
     @Transactional
     public void delete(UUID messageId) {
         Message message = this.findMessageEntity(messageId);
-        // Message.attachments 의 설정에 메시지를 삭제하면 첨부 파일을 자동으로 같이
-        // 삭제하는 설정이 존재합니다. 때문에 첨부 파일엔티티를 같이 삭제할 필요가 없습니다.
-        /*
-        List<UUID> attachmentIds = message.getAttachments().stream()
-                .map(BaseEntity::getId)
-                .toList();
-        attachmentIds.forEach(this.binaryContentRepository::deleteById);
-         */
+
         messageRepository.deleteById(messageId);
     }
 }
