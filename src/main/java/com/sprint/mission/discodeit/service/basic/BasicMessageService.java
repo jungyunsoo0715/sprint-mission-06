@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,8 @@ public class BasicMessageService implements MessageService {
     private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
     private final BinaryContentRepository binaryContentRepository;
+
+    private final BinaryContentStorage binaryContentStorage;
 
     private final MessageMapper messageMapper;
 
@@ -71,6 +74,16 @@ public class BasicMessageService implements MessageService {
             return List.of();
         }
 
+        List<byte[]> bytesList = attachments.stream()
+                .map(a -> {
+                    try {
+                        return a.getBytes();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+
         List<BinaryContent> binaryContents = attachments.stream()
                 .map(a -> {
                     return new BinaryContent(
@@ -80,7 +93,14 @@ public class BasicMessageService implements MessageService {
                     );
                 }).toList();
 
-        return this.binaryContentRepository.saveAll(binaryContents);
+        binaryContents = this.binaryContentRepository.saveAll(binaryContents);
+
+        for (int i = 0; i < binaryContents.size(); i++) {
+            BinaryContent savedContent = binaryContents.get(i);
+            this.binaryContentStorage.put(savedContent.getId(), bytesList.get(i));
+        }
+
+        return binaryContents;
     }
 
     @Override
