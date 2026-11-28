@@ -16,6 +16,7 @@ import java.util.UUID;
 @Setter
 @Table(name = "user_statuses")
 public class UserStatus extends BaseUpdatableEntity {
+    // UserStatus와 User는 1:1 연관관계를 가집니다.
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;

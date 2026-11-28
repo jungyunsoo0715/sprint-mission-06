@@ -5,24 +5,27 @@ import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
-@Getter
-@Entity
-@Table(name = "channels")
+@Entity(name = "channels")
 @NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "channels")
 public class Channel extends BaseUpdatableEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 10, nullable = false)
     private ChannelType type;
+
     @Column(name = "name", length = 100)
     private String name;
+
     @Column(name = "description", length = 500)
     private String description;
 
     public Channel(PublicChannelCreateRequest request) {
-        this.id = UUID.randomUUID();
         this.type = ChannelType.PUBLIC;
         this.name = request.name();
         this.description = request.description();

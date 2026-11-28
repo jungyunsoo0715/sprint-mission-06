@@ -11,28 +11,22 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "binary_contents")
+@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "binary_contents")
-@NoArgsConstructor
 public class BinaryContent extends BaseEntity {
     @Column(name = "file_name", length = 255, nullable = false)
     private String fileName;
+
     @Column(name = "size", nullable = false)
     private Long size;
+
     @Column(name = "content_type", length = 100, nullable = false)
     private String contentType;
 
     public BinaryContent(String fileName, Long size, String contentType) {
-        this.id = UUID.randomUUID();
-        this.fileName = fileName;
-        this.size = size;
-        this.contentType = contentType;
-    }
-
-    public BinaryContent(UUID id, String fileName, Long size, String contentType) {
-        this.id = id;
         this.fileName = fileName;
         this.size = size;
         this.contentType = contentType;

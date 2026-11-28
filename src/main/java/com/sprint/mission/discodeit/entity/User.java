@@ -26,16 +26,33 @@ public class User extends BaseUpdatableEntity {
     @JoinColumn(name = "profile_id", unique = true)
     private BinaryContent profile;
 
-    // UserStatus와 User는 1:1 연관 관계를 가집니다.
+    // User와 UserStatus는 1:1 연관 관계를 가집니다.
     @OneToOne(
             // mappedBy는 상대 엔티티에서 이 연관관계의 외래 키를 관리하는 필드입니다.
+            // 양방향 엔티티 참조에만 쓰입니다.
             mappedBy = "user",
             // JPA 작업이 참조하고 있는 엔티티에도 적용됩니다.
             cascade = CascadeType.ALL,
+            // orphanRemoval = true 는
+            // 부모와의 연결이 끊기면 그 자식 엔티티를 삭제해도 되는가를 기준으로 합니다.
             // FK로 참조하고 있는 엔티티(User)와의 연관관계가 끊어지면,
             // flush()시(userRepository.flush()와 같은 작업을 하는)에,
             // 해당 엔티티(UserStatus)가 삭제됩니다.
             orphanRemoval = true
+            /*
+            UserStatus는 User에 종속된 엔티티이기 때문에 그 두 엔티티 객체의 생명 주기를 함께
+            관리할 필요성이 있습니다. 때문에 cascade로 User에 JPA 작업이 적용될 때,
+            UserStatus도 JPA 작업(persist, merge, remove, refresh, detach)이 적용되게합니다.
+            또한 User와 UserStatus의 관계가 끊어질 때, UserStatus는 더 이상 필요하지
+            않으므로, orphanRemoval = true로 UserStatus를 자동으로 삭제하게 해줍니다.
+             */
+            /*
+            persist — 새 엔티티를 영속성 컨텍스트에 등록합니다
+	        merge — 전달한 엔티티의 상태를 영속성 컨텍스트가 관리하는 객체에 복사합니다.
+            remove — 엔티티를 삭제 대상으로 지정합니다.
+            refresh — DB에서 다시 읽은 값으로 엔티티 상태를 갱신합니다.
+            detach — 엔티티를 영속성 컨텍스트의 관리에서 분리합니다.
+             */
     )
     private UserStatus userStatus;
 
@@ -68,6 +85,7 @@ public class User extends BaseUpdatableEntity {
         this.password = password;
     }
 
+    // @Setter가 클래스에 붙어있다해도, 정의된 메서드가 있다면 정의된 메서드만 사용됩니다.
     public void setUserStatus(UserStatus userStatus) {
         if (this.userStatus == userStatus) return;
 
