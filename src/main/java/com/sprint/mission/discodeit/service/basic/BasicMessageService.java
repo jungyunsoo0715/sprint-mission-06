@@ -23,15 +23,11 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class BasicMessageService implements MessageService {
-
     private final MessageRepository messageRepository;
-
     private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
     private final BinaryContentRepository binaryContentRepository;
-
     private final BinaryContentStorage binaryContentStorage;
-
     private final MessageMapper messageMapper;
 
     @Override

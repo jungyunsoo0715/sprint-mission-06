@@ -61,10 +61,6 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
 
     @Override
     public ResponseEntity<Resource> download(BinaryContentDto dto) {
-        // Resource resource = new InputStreamResource(this.get(dto.id()));
-
-        // return ResponseEntity.ok(resource);
-
         // ContentDisposition.attachment()는
         // 브라우저에 파일을 첨부파일로 다운로드하라고 알려 주는 설정이야.
         // .filename(dto.fileName(), StandardCharsets.UTF_8)는 다운로드할 때

@@ -23,30 +23,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BasicReadStatusService implements ReadStatusService {
-
     private final ReadStatusRepository readStatusRepository;
-
     private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
-
     private final ReadStatusMapper readStatusMapper;
 
     @Override
     @Transactional
     public ReadStatusDto create(ReadStatusCreateRequest request) {
-        /*
-        if (!this.userRepository.existsById(request.userId())) {
-            throw new UserNotFoundException(
-                    "ID가 " + request.userId() + "인 사용자를 찾을 수 없습니다."
-            );
-        }
-        if (!this.channelRepository.existsById(request.channelId())) {
-            throw new ChannelNotFoundException(
-                    "ID가 " + request.channelId() + "인 채널을 찾을 수 없습니다."
-            );
-        }
-         */
-
         User user = this.userRepository.findById(request.userId())
                 .orElseThrow(() -> new UserNotFoundException(
                         "ID가 " + request.userId() + "인 사용자를 찾을 수 없습니다."
@@ -108,9 +92,7 @@ public class BasicReadStatusService implements ReadStatusService {
     public ReadStatusDto update(UUID readStatusID, ReadStatusUpdateRequest request) {
         ReadStatus readStatus = this.findReadStatusEntity(readStatusID);
 
-        // readStatus.update();
         readStatus.updateLastReadAt(request.newLastReadAt());
-        // this.readStatusRepository.save(readStatus);
 
         this.readStatusRepository.flush();
 

@@ -26,30 +26,6 @@ public class BasicUserStatusService implements UserStatusService {
     private final UserRepository userRepository;
     private final UserStatusMapper userStatusMapper;
 
-    /*
-    @Override
-    public UserStatusResponse create(UserStatusCreateRequest request) {
-        if (!this.userRepository.existsById(request.userId())) {
-            throw new UserNotFoundException(
-                    "ID가 " + request.userId() + "인 사용자를 찾을 수 없습니다."
-            );
-        }
-
-        if (this.userStatusRepository.findByUserId(request.userId()).isPresent()) {
-            throw new DuplicateResourceException(
-                    "해당 사용자의 사용자 상태 정보가 이미 존재합니다. 사용자 ID: "
-                            + request.userId()
-            );
-        }
-
-        UserStatus userStatus = new UserStatus(request.userId());
-
-        this.userStatusRepository.save(userStatus);
-
-        return this.userStatusMapper.toUserStatusResponse(userStatus);
-    }
-     */
-
     @Override
     public UserStatusDto find(UUID userStatusId) {
         UserStatus userStatus = this.userStatusRepository.findById(userStatusId)
@@ -79,6 +55,7 @@ public class BasicUserStatusService implements UserStatusService {
                         ));
 
         userStatus.update();
+
         this.userStatusRepository.save(userStatus);
 
         return this.userStatusMapper.toDto(userStatus);
@@ -101,10 +78,11 @@ public class BasicUserStatusService implements UserStatusService {
         }
 
         userStatus.update();
+
         userStatus.updateOnlineStatus();
 
         this.userStatusRepository.flush();
-        // this.userStatusRepository.save(userStatus);
+
         return this.userStatusMapper.toDto(userStatus);
     }
 
@@ -114,7 +92,7 @@ public class BasicUserStatusService implements UserStatusService {
             throw new UserStatusNotFoundException(
                     "ID가 " + userStatusId + "인 사용자 상태 정보를 찾을 수 없습니다.");
         }
+
         this.userStatusRepository.deleteById(userStatusId);
     }
-
 }

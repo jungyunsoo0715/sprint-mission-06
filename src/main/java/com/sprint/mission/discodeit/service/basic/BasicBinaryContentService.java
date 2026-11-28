@@ -19,11 +19,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BasicBinaryContentService implements BinaryContentService {
-
     private final BinaryContentRepository binaryContentRepository;
-
     private final BinaryContentStorage binaryContentStorage;
-
     private final BinaryContentMapper binaryContentMapper;
 
     @Override
