@@ -32,7 +32,6 @@ public class Channel extends BaseUpdatableEntity {
     }
 
     public Channel(PrivateChannelCreateRequest request) {
-        this.id = UUID.randomUUID();
         this.type = ChannelType.PRIVATE;
         this.name = null;
         this.description = null;
