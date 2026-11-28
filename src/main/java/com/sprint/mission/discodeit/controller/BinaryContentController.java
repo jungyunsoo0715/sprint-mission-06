@@ -208,7 +208,7 @@ public class BinaryContentController {
         );
     }
 
-    @GetMapping("/api/binaryContents/{binaryContentId}/download")
+    @GetMapping("/{binaryContentId}/download")
     public ResponseEntity<?> downloadBinaryContent(
             @PathVariable("binaryContentId") UUID binaryContentId
     ) {
