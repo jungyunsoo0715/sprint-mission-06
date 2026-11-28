@@ -7,10 +7,12 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Getter
-@Entity
-@Table(name = "users")
+
+@Entity(name = "users") // @Table을 생략하면, 이 이름이 기본 테이블 명으로 사용됩니다.
 @NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "users") // 둘 다 사용하면, @Entity(name = ...) 은 JPQL에서 사용 할 이름이 됩니다.
 public class User extends BaseUpdatableEntity {
 
     @OneToOne
@@ -32,7 +34,6 @@ public class User extends BaseUpdatableEntity {
     private String password;
 
     public User(BinaryContent profile, String username, String email, String password) {
-        this.id = UUID.randomUUID();
         this.profile = profile;
         this.username = username;
         this.email = email;
